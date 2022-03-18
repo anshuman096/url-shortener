@@ -5,10 +5,15 @@ TEMP_DB = {}
 
 
 def shorten(url):
-    print("original url: ", url)
     url_hash = base62.encode(abs(hash(url)))
     if url_hash not in TEMP_DB:
-        print("IN HERE")
         TEMP_DB[url_hash] = url
-    short_url = SHORTENED_URL_PREFIX + url_hash
+    short_url = url_hash
     return short_url
+
+
+def route_to_original(url_hash):
+    if url_hash not in TEMP_DB:
+        return None
+    else:
+        return TEMP_DB[url_hash]
