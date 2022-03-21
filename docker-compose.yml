@@ -6,20 +6,20 @@ services:
     build: ./generator
     ports: ['5001:5000']
     environment:
-      MONGODB_DATABASE: urlshortener_db
-      MONGODB_USER: mongodb
-      MONGODB_PASSWORD: mongodb
-      MONGODB_HOSTNAME: urlshortener
+      MONGODB_DATABASE: '${MONGODB_DATABASE}'
+      MONGODB_USER: '${MONGODB_USERNAME}'
+      MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
+      MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
     volumes: ['./generator:/app']
     container_name: urlshortener-generator
   router:
     build: ./router
     ports: ['5002:5000']
     environment:
-      MONGODB_DATABASE: urlshortener_db
-      MONGODB_USER: mongodb
-      MONGODB_PASSWORD: mongodb
-      MONGODB_HOSTNAME: urlshortener
+      MONGODB_DATABASE: '${MONGODB_DATABASE}'
+      MONGODB_USER: '${MONGODB_USERNAME}'
+      MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
+      MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
     volumes: ['./router:/app']
     container_name: urlshortener-router
   mongodb:
@@ -27,7 +27,7 @@ services:
     hostname: urlshortener
     container_name: urlshortener-mongodb
     environment:
-      - MONGO_INITDB_DATABASE=urlshortener_db
-      - MONGO_INITDB_ROOT_USERNAME=mongodb
-      - MONGO_INITDB_ROOT_PASSWORD=mongodb
+      - MONGO_INITDB_DATABASE='${MONGO_INITDB_DATABASE}'
+      - MONGO_INITDB_ROOT_USERNAME='${MONGO_INITDB_ROOT_USERNAME}'
+      - MONGO_INITDB_ROOT_PASSWORD='${MONGO_INITDB_ROOT_PASSWORD}'
     ports: ['27017:27017']
