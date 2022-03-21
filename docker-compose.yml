@@ -1,8 +1,33 @@
-version: "3"
+version: '3'
+
 
 services:
-  server:
-    build: ./server
+  generator:
+    build: ./generator
     ports: ['5001:5000']
-    volumes: ['./server:/app']
-    container_name: urlshortener-server
+    environment:
+      MONGODB_DATABASE: urlshortener_db
+      MONGODB_USER: mongodb
+      MONGODB_PASSWORD: mongodb
+      MONGODB_HOSTNAME: urlshortener
+    volumes: ['./generator:/app']
+    container_name: urlshortener-generator
+  router:
+    build: ./router
+    ports: ['5002:5000']
+    environment:
+      MONGODB_DATABASE: urlshortener_db
+      MONGODB_USER: mongodb
+      MONGODB_PASSWORD: mongodb
+      MONGODB_HOSTNAME: urlshortener
+    volumes: ['./router:/app']
+    container_name: urlshortener-router
+  mongodb:
+    image: mongo:latest
+    hostname: urlshortener
+    container_name: urlshortener-mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=urlshortener_db
+      - MONGO_INITDB_ROOT_USERNAME=mongodb
+      - MONGO_INITDB_ROOT_PASSWORD=mongodb
+    ports: ['27017:27017']
