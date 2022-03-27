@@ -12,7 +12,7 @@ services:
       MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
     volumes: ['./generator:/app']
     container_name: urlshortener-generator
-  router:
+  router1:
     build: ./router
     ports: ['5002:5000']
     environment:
@@ -21,7 +21,27 @@ services:
       MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
       MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
     volumes: ['./router:/app']
-    container_name: urlshortener-router
+    container_name: urlshortener-router-1
+  router2:
+    build: ./router
+    ports: [ '5003:5000' ]
+    environment:
+      MONGODB_DATABASE: '${MONGODB_DATABASE}'
+      MONGODB_USER: '${MONGODB_USERNAME}'
+      MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
+      MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
+    volumes: [ './router:/app' ]
+    container_name: urlshortener-router-2
+  router3:
+    build: ./router
+    ports: [ '5004:5000' ]
+    environment:
+      MONGODB_DATABASE: '${MONGODB_DATABASE}'
+      MONGODB_USER: '${MONGODB_USERNAME}'
+      MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
+      MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
+    volumes: [ './router:/app' ]
+    container_name: urlshortener-router-3
   mongodb:
     image: mongo:latest
     hostname: urlshortener
