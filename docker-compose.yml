@@ -46,11 +46,13 @@ services:
     image: mongo:latest
     hostname: urlshortener
     container_name: urlshortener-mongodb
+    restart: always
     environment:
-      - MONGO_INITDB_DATABASE='${MONGO_INITDB_DATABASE}'
-      - MONGO_INITDB_ROOT_USERNAME='${MONGO_INITDB_ROOT_USERNAME}'
-      - MONGO_INITDB_ROOT_PASSWORD='${MONGO_INITDB_ROOT_PASSWORD}'
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     ports: ['27017:27017']
+    volumes: [ './services/mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js' ]
   nginx:
     build: ./services/nginx
     ports: [ '8080:80' ]
@@ -59,4 +61,3 @@ services:
       - router1
       - router2
       - router3
-
