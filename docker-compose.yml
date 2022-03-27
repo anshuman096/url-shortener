@@ -3,44 +3,44 @@ version: '3'
 
 services:
   generator:
-    build: ./generator
+    build: ./services/generator
     ports: ['5001:5000']
     environment:
       MONGODB_DATABASE: '${MONGODB_DATABASE}'
       MONGODB_USER: '${MONGODB_USERNAME}'
       MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
       MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
-    volumes: ['./generator:/app']
+    volumes: ['./services/generator:/app']
     container_name: urlshortener-generator
   router1:
-    build: ./router
-    ports: ['5002:5000']
+    build: ./services/router
+    ports: [ '5002:5000' ]
     environment:
       MONGODB_DATABASE: '${MONGODB_DATABASE}'
       MONGODB_USER: '${MONGODB_USERNAME}'
       MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
       MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
-    volumes: ['./router:/app']
+    volumes: ['./services/router:/app']
     container_name: urlshortener-router-1
   router2:
-    build: ./router
+    build: ./services/router
     ports: [ '5003:5000' ]
     environment:
       MONGODB_DATABASE: '${MONGODB_DATABASE}'
       MONGODB_USER: '${MONGODB_USERNAME}'
       MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
       MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
-    volumes: [ './router:/app' ]
+    volumes: [ './services/router:/app' ]
     container_name: urlshortener-router-2
   router3:
-    build: ./router
+    build: ./services/router
     ports: [ '5004:5000' ]
     environment:
       MONGODB_DATABASE: '${MONGODB_DATABASE}'
       MONGODB_USER: '${MONGODB_USERNAME}'
       MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
       MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
-    volumes: [ './router:/app' ]
+    volumes: [ './services/router:/app' ]
     container_name: urlshortener-router-3
   mongodb:
     image: mongo:latest
@@ -51,3 +51,12 @@ services:
       - MONGO_INITDB_ROOT_USERNAME='${MONGO_INITDB_ROOT_USERNAME}'
       - MONGO_INITDB_ROOT_PASSWORD='${MONGO_INITDB_ROOT_PASSWORD}'
     ports: ['27017:27017']
+  nginx:
+    build: ./services/nginx
+    ports: [ '8080:80' ]
+    container_name: urlshortener-loadbalancer
+    depends_on:
+      - router1
+      - router2
+      - router3
+
