@@ -3,31 +3,61 @@ version: '3'
 
 services:
   generator:
-    build: ./generator
+    build: ./services/generator
     ports: ['5001:5000']
     environment:
       MONGODB_DATABASE: '${MONGODB_DATABASE}'
       MONGODB_USER: '${MONGODB_USERNAME}'
       MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
       MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
-    volumes: ['./generator:/app']
+    volumes: ['./services/generator:/app']
     container_name: urlshortener-generator
-  router:
-    build: ./router
-    ports: ['5002:5000']
+  router1:
+    build: ./services/router
+    ports: [ '5002:5000' ]
     environment:
       MONGODB_DATABASE: '${MONGODB_DATABASE}'
       MONGODB_USER: '${MONGODB_USERNAME}'
       MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
       MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
-    volumes: ['./router:/app']
-    container_name: urlshortener-router
+    volumes: ['./services/router:/app']
+    container_name: urlshortener-router-1
+  router2:
+    build: ./services/router
+    ports: [ '5003:5000' ]
+    environment:
+      MONGODB_DATABASE: '${MONGODB_DATABASE}'
+      MONGODB_USER: '${MONGODB_USERNAME}'
+      MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
+      MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
+    volumes: [ './services/router:/app' ]
+    container_name: urlshortener-router-2
+  router3:
+    build: ./services/router
+    ports: [ '5004:5000' ]
+    environment:
+      MONGODB_DATABASE: '${MONGODB_DATABASE}'
+      MONGODB_USER: '${MONGODB_USERNAME}'
+      MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
+      MONGODB_HOSTNAME: '${MONGODB_HOSTNAME}'
+    volumes: [ './services/router:/app' ]
+    container_name: urlshortener-router-3
   mongodb:
     image: mongo:latest
     hostname: urlshortener
     container_name: urlshortener-mongodb
+    restart: always
     environment:
-      - MONGO_INITDB_DATABASE='${MONGO_INITDB_DATABASE}'
-      - MONGO_INITDB_ROOT_USERNAME='${MONGO_INITDB_ROOT_USERNAME}'
-      - MONGO_INITDB_ROOT_PASSWORD='${MONGO_INITDB_ROOT_PASSWORD}'
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     ports: ['27017:27017']
+    volumes: [ './services/mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js' ]
+  nginx:
+    build: ./services/nginx
+    ports: [ '8080:80' ]
+    container_name: urlshortener-loadbalancer
+    depends_on:
+      - router1
+      - router2
+      - router3
