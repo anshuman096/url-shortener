@@ -10,7 +10,6 @@ client = MongoClient(
 
 class UrlTypes(Enum):
     STANDARD = 'http://'
-    ENCRYPTED = 'https://'
 
 def route(url_hash):
     query_res = client['urlshortener_db']['url_mappings'].find_one({'url_hash': url_hash})
@@ -20,7 +19,7 @@ def route(url_hash):
         return query_res['original_url']
 
 def format_url(url_string):
-    if UrlTypes.STANDARD or UrlTypes.ENCRYPTED in url_string:
+    if UrlTypes.STANDARD in url_string:
         return url_string
     else:
-        return "http://" + url_string
+        return UrlTypes.STANDARD + url_string
