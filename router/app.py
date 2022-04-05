@@ -1,13 +1,13 @@
 from flask import abort, Flask, redirect
 
-from router import route
+from router import format_url, route
 
 app = Flask(__name__)
 
 
 @app.route('/<url_hash>', methods=['GET'])
 def routeUrl(url_hash):
-    original_url = route(url_hash)
+    original_url = format_url(route(url_hash))
     if original_url:
         return redirect("http://" + original_url, 301)
     else:
